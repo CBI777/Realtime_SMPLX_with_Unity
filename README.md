@@ -28,8 +28,20 @@ A big cheers to [homuler](https://ko-fi.com/homuler)(the author of the plugin).
 --------------
 # Architecture
 Here is an image showing the overall architecture design of the project.
-
+![architecture.png](readmeImg%2Farchitecture.png)
 
 --------------
 # Please Note that :
-In order to do shape representation, a TCP server must be reconstructed using the code
+In order to do shape representation, a TCP server must be reconstructed using the code inside the branch - PythonServer.
+Alternatively, you can create your own python TCP server using different shape estimation model.
+
+> For Unity side, you have to change the text file inside /Assets/RealTimeSMPL/ShapeConf/Secrets/ so that it contains proper ip address and port number, in a format of:
+> > ```text
+xxx.xxx.xx.xxx
+0000
+```
+Hostname and port number must be split by "line separator" like this
+> By assigning the text file to UnitySocketClient_auto.cs script's IpConf variable, now you are ready to send your RGB frame to the python server, requesting for shape estimation.
+> > The script is located at
+    Main Canvas > ContainerPanel > Body > Annotatable Screen
+in the Assets > RealTimeSMPL > Scene > RealTimeSMPLX.unity scene's Hierarchy window.
