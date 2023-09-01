@@ -29,7 +29,7 @@ A big cheers to [homuler](https://ko-fi.com/homuler)(the author of the plugin).
 --------------
 # Architecture
 Here is an image showing the overall architecture design of the project.
-![architecture.png](readmeImg%2Farchitecture.png)
+![architecture.png](README_img%2Farchitecture.png)
 
 
 
@@ -58,7 +58,7 @@ in the Assets > RealTimeSMPL > Scene > RealTimeSMPLX.unity scene's Hierarchy win
 
 - request
 
-![req.png](readmeImg%2Freq.png)
+![req.png](README_img%2Freq.png)
 
 <h4 align="center">
 Image Length is followed by Image
@@ -66,7 +66,7 @@ Image Length is followed by Image
 
 - response
 
-![res.png](readmeImg%2Fres.png)
+![res.png](README_img%2Fres.png)
 
 Those two byte arrays are passed on tcp stream. Request form would be passed on the stream correctly if you assigned valid value on IpConf variable.
 You have to obey response message form when implementing inference server.
@@ -76,7 +76,7 @@ You have to obey response message form when implementing inference server.
 
 We used [MediaPipe](https://developers.google.com/mediapipe) framework for 3D pose estimation. 
 
-![mediaPipeJoints.png](readmeImg%2FmediaPipeJoints.png)
+![mediaPipeJoints.png](README_img%2FmediaPipeJoints.png)
 
 The estimated data contains each joint's rotation angles. 
 
