@@ -36,7 +36,7 @@ In order to do shape representation, a TCP server must be reconstructed using th
 Alternatively, you can create your own python TCP server using different shape estimation model.
 
 > For Unity side, you have to change the text file inside /Assets/RealTimeSMPL/ShapeConf/Secrets/ so that it contains proper ip address and port number, in a format of:
-> > ```text
+```text
 xxx.xxx.xx.xxx
 0000
 ```
