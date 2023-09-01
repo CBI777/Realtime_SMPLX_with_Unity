@@ -42,6 +42,6 @@ xxx.xxx.xx.xxx
 ```
 Hostname and port number must be split by "line separator" like this
 > By assigning the text file to UnitySocketClient_auto.cs script's IpConf variable, now you are ready to send your RGB frame to the python server, requesting for shape estimation.
-> > The script is located at
+The script is located at
     Main Canvas > ContainerPanel > Body > Annotatable Screen
 in the Assets > RealTimeSMPL > Scene > RealTimeSMPLX.unity scene's Hierarchy window.
