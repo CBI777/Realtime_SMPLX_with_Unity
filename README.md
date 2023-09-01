@@ -76,7 +76,7 @@ You have to obey response message form when implementing inference server.
 
 We used [MediaPipe](https://developers.google.com/mediapipe) framework for 3D pose estimation. 
 
-![mediaPipeJoints.png](README_img%2FmediaPipeJoints.png)
+![mediaPipeJoints.png](README_Img%2FmediaPipeJoints.png)
 
 The estimated data contains each joint's rotation angles. 
 
