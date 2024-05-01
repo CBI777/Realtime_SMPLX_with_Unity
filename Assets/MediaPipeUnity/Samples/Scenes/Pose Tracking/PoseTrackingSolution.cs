@@ -4,7 +4,6 @@
 // license that can be found in the LICENSE file or at
 // https://opensource.org/licenses/MIT.
 
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -18,21 +17,6 @@ namespace Mediapipe.Unity.PoseTracking
     [SerializeField] private PoseWorldLandmarkListAnnotationController _poseWorldLandmarksAnnotationController;
     [SerializeField] private MaskAnnotationController _segmentationMaskAnnotationController;
     [SerializeField] private NormalizedRectAnnotationController _roiFromLandmarksAnnotationController;
-
-    [SerializeField]
-    //private MedPipe2SMPL Converter;
-    private MedPipe2HumanoidAvatar[] ConvList = new MedPipe2HumanoidAvatar[2];
-    [SerializeField]
-    private MedPipe2HumanoidAvatar Converter;
-    [SerializeField]
-    private int genNum = 0;
-
-    public void alterConverter()
-    {
-      if(this.genNum == 0) { genNum = 1; }
-      else { genNum = 0; }
-      Converter = ConvList[genNum];
-    }
 
     public PoseTrackingGraph.ModelComplexity modelComplexity
     {
@@ -133,17 +117,11 @@ namespace Mediapipe.Unity.PoseTracking
     private void OnPoseLandmarksOutput(object stream, OutputEventArgs<NormalizedLandmarkList> eventArgs)
     {
       _poseLandmarksAnnotationController.DrawLater(eventArgs.value);
-      // string unparsedDict = eventArgs.value + "";
-      // if(unparsedDict == String.Empty) return;
-      // Converter.Convert(unparsedDict);
     }
 
     private void OnPoseWorldLandmarksOutput(object stream, OutputEventArgs<LandmarkList> eventArgs)
     {
       _poseWorldLandmarksAnnotationController.DrawLater(eventArgs.value);
-      string unparsedDict = eventArgs.value + "";
-      if(unparsedDict == String.Empty) return;
-      Converter.Convert(unparsedDict);
     }
 
     private void OnSegmentationMaskOutput(object stream, OutputEventArgs<ImageFrame> eventArgs)

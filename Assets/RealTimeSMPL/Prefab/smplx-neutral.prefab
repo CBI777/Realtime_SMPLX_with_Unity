@@ -903,7 +903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b564f2598177511ca8842192b384974, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelType: 0
+  modelType: 2
   betas:
   - 0
   - 0
@@ -943,7 +943,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _targetSMPL: {fileID: 1912447304629375338}
-  _mainCanvasRectTransform: {fileID: 0}
   KalmanParamQ: 0.3
   KalmanParamR: 0.3
 --- !u!1 &5175205224647648727

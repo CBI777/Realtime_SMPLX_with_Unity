@@ -1,31 +1,45 @@
 using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+
 public class UnitySocketClient_Auto : MonoBehaviour
 {
   //private TcpClient socketConnection;
   /// //////////////////////////////////////
   public RawImage display;
+
   public Vector2 camwh;
+
   public int camIndex = 0;
+
   //private WebCamTexture camTexture;
   [SerializeField] private Mediapipe.Unity.WebCamSource camTexture;
   [SerializeField] private RealTimeSMPLX targetModel;
   [SerializeField] private RealTimeSMPLX[] genderModels = new RealTimeSMPLX[2];
+
   [SerializeField] private InputField inputField;
+
   //private int num = 0;
-  //Byte[] ans = new byte[608]; //float, 8byte : 80+24+63*8 = 608
-  Byte[] ans = new byte[80];
-  //8byte 10beta paramter + 63 pose parameter.
+  Byte[] result;
+  Byte[] ans = new byte[80]; //float인데, 8byte가 : 80+24+63*8 = 608
   float[] val = new float[10];
   public byte gen = 0;
+  double[] body_pose = new double[66];
   private float height_F = 164.8f;
   private float midHeight_F = 1.001f;
   private float height_M = 178.1f;
   private float midHeight_M = 0.5465f;
   [SerializeField] private TextAsset ipConf;
+  private StringReader sr;
+
+  private void Start()
+  {
+    sr = new StringReader(ipConf.text);
+  }
+
   public void alterGen()
   {
     genderModels[this.gen].gameObject.SetActive(false);
@@ -37,8 +51,10 @@ public class UnitySocketClient_Auto : MonoBehaviour
     {
       targetModel.betas[i] = 0f;
     }
+
     targetModel.SetBetaShapes();
   }
+
   private byte[] takeAPicture()
   {
     Texture2D camTex = new Texture2D(camTexture.textureWidth, camTexture.textureHeight, TextureFormat.RGB24, false);
@@ -46,12 +62,14 @@ public class UnitySocketClient_Auto : MonoBehaviour
     camTex.Apply();
     return ImageConversion.EncodeToJPG(camTex);
   }
+
   // Start is called before the first frame update
   void OnApplicationQuit()
   {
     camTexture.Stop();
     //socketConnection.Close();
   }
+
   //IEnumerator giveServerPic()
   public async void giveServerPic()
   {
@@ -63,7 +81,7 @@ public class UnitySocketClient_Auto : MonoBehaviour
       string hostname;
       int port;
       ParseIpConf(out hostname, out port);
-      await socketConnection.ConnectAsync(hostname, port);
+      socketConnection = new TcpClient(hostname, port);
       //Debug.Log("Connecting Done");
     }
     catch (Exception e)
@@ -72,6 +90,7 @@ public class UnitySocketClient_Auto : MonoBehaviour
       //yield break;
       return;
     }
+
     byte[] b = takeAPicture();
     byte[] size = BitConverter.GetBytes(b.Length);
     Debug.Log(b.Length);
@@ -92,6 +111,7 @@ public class UnitySocketClient_Auto : MonoBehaviour
         //yield break;
         return;
       }
+
       Debug.Log("Sending Actual Data Done");
     }
     else
@@ -99,6 +119,7 @@ public class UnitySocketClient_Auto : MonoBehaviour
       Debug.Log("Failed to send data");
       Quit();
     }
+
     try
     {
       stream = socketConnection.GetStream();
@@ -111,14 +132,16 @@ public class UnitySocketClient_Auto : MonoBehaviour
       //yield break;
       return;
     }
+
     socketConnection.Close();
     //yield break;
     return;
   }
+
   private async void SetBetas()
   {
     Debug.Log("beta");
-    if (gen == 0)//female
+    if (gen == 0) //female
     {
       targetModel.betas[0] = (float)System.BitConverter.ToDouble(ans, 0);
     }
@@ -126,6 +149,7 @@ public class UnitySocketClient_Auto : MonoBehaviour
     {
       targetModel.betas[0] = -1 * (float)System.BitConverter.ToDouble(ans, 0);
     }
+
     //for(int i = 0; i < 10; i++)
     for (int i = 1; i < 10; i++)
     {
@@ -133,13 +157,16 @@ public class UnitySocketClient_Auto : MonoBehaviour
       //print("Shape[" + i + "] = " + val[i]);
       //code for using HuManiFlow
       targetModel.betas[i] = -1 * val[i];
+      //targetModel.betas[i] = val[i] * 10;
+      //simple change to make it more 'dramatic'. Actually you shouldn't do this.
     }
 
     //1. temporary height change
+    //TODO: 예외처리는 하지 않았음. 비어있으면 맞기고, 키를 넣었다면 처리함.
     if (inputField.text != "")
     {
       float temp = float.Parse(inputField.text);
-      if (gen == 0)//female
+      if (gen == 0) //female
       {
         temp = ((temp - height_F) / midHeight_F) * 0.1f;
         Debug.Log(temp);
@@ -149,13 +176,23 @@ public class UnitySocketClient_Auto : MonoBehaviour
         temp = ((height_M - temp) / midHeight_M) * 0.1f;
         Debug.Log(temp);
       }
-      if (temp > 5) { temp = 5.0f; }
-      else if (temp < -5) { temp = -5.0f; }
+
+      if (temp > 5)
+      {
+        temp = 5.0f;
+      }
+      else if (temp < -5)
+      {
+        temp = -5.0f;
+      }
+
       Debug.Log(temp);
       targetModel.betas[0] = temp;
     }
+
     targetModel.SetBetaShapes();
   }
+
   private void Update()
   {
     if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(1))
@@ -164,11 +201,21 @@ public class UnitySocketClient_Auto : MonoBehaviour
       giveServerPic();
     }
   }
+
   private void ParseIpConf(out string hostname, out int port)
   {
-    string[] tokens = ipConf.text.Split("\n");
-    hostname = tokens[0];
-    port = int.Parse(tokens[1]);
+    try
+    {
+      sr = new StringReader(ipConf.text);
+      hostname = sr.ReadLine();
+      port = int.Parse(sr.ReadLine());
+    }
+    catch (Exception e)
+    {
+      Debug.LogWarning(e.Message);
+      hostname = null;
+      port = 0;
+    }
   }
 
   public void Quit()
