@@ -27,6 +27,8 @@
 bazel-*
 
 Assets/StreamingAssets*
+!Packages/com.github.homuler.mediapipe/*
+
 
 # for secrets
 Assets/RealTimeSMPL/ShapeConf/Secrets/*
